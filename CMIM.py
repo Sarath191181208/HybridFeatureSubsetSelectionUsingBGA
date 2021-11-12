@@ -1,5 +1,6 @@
 from entropy_estimators import *
-
+from tqdm import tqdm 
+import numpy as np
 
 def cmim(X, y, **kwargs):
 
@@ -32,9 +33,6 @@ def cmim(X, y, **kwargs):
     ---------
     Brown, Gavin et al. "Conditional Likelihood Maximisation: A Unifying Framework for Information Theoretic Feature Selection." JMLR 2012.
     """
-    x_labels = X.columns
-    X = X.to_numpy()
-    y = y.to_numpy()
 
     n_samples, n_features = X.shape
     # index of selected features, initialized to be empty
@@ -62,8 +60,14 @@ def cmim(X, y, **kwargs):
 
     # make sure that j_cmi is positive at the very beginning
     j_cmim = 1
+    # itr_ = 0
+
+    p_bar = tqdm(total=n_features)
 
     while True:
+        p_bar.update(1)
+        # itr_ += 1
+        # print(itr_)
         if len(F) == 0:
             # select the feature whose mutual information is the largest
             idx = np.argmax(t1)
@@ -75,6 +79,7 @@ def cmim(X, y, **kwargs):
         if is_n_selected_features_specified:
             if len(F) == n_selected_features:
                 break
+
         else:
             if j_cmim <= 0:
                 break
@@ -99,4 +104,14 @@ def cmim(X, y, **kwargs):
         MIfy.append(t1[idx])
         f_select = X[:, idx]
 
+    p_bar.close()
     return np.array(F), np.array(J_CMIM), np.array(MIfy)
+
+
+if __name__ == "__main__":
+    x, y = [], []
+    for i in range(10):
+        x.append(i*2)
+        y.append(i)
+    x, y = np.array([x], dtype=int), np.array(y, dtype=int)
+    cmim(x, y)
