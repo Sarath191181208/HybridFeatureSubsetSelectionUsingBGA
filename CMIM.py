@@ -62,7 +62,7 @@ def cmim(X, y, **kwargs):
     j_cmim = 1
     # itr_ = 0
 
-    p_bar = tqdm(total=n_features)
+    p_bar = tqdm(total=n_features) if not is_n_selected_features_specified else tqdm(total=n_selected_features)
 
     while True:
         p_bar.update(1)
@@ -107,7 +107,7 @@ def cmim(X, y, **kwargs):
     p_bar.close()
     return np.array(F), np.array(J_CMIM), np.array(MIfy)
 
-
+## --------------------- Test --------------------------------
 if __name__ == "__main__":
     x, y = [], []
     for i in range(10):
@@ -115,3 +115,4 @@ if __name__ == "__main__":
         y.append(i)
     x, y = np.array([x], dtype=int), np.array(y, dtype=int)
     cmim(x, y)
+## ----------------------------------------------------------------

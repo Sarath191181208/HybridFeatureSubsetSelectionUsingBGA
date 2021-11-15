@@ -1,8 +1,9 @@
 import numpy as np
-print("imp")
-# import tqdm import tnrange
+
+# import tqdm import tnrange for progress bar
 from tqdm import trange
-def main():
+
+def test():
 
     def fitness(binary_gene):
         w = np.array([71, 34, 82, 23, 1, 88, 12, 57, 10, 68, 5, 33, 37, 69, 98, 24, 26, 83, 16, 26, 18, 43, 52, 71, 22, 65, 68, 8, 40, 40, 24, 72, 16, 34, 10, 19, 28, 13, 34, 98, 29, 31, 79, 33, 60, 74, 44, 56, 54, 17, 63, 83, 100, 54, 10, 5, 79, 42, 65, 93, 52, 64, 85, 68, 54, 62, 29, 40, 35, 90, 47, 77, 87, 75, 39, 18, 38, 25, 61, 13, 36, 53, 46, 28, 44, 34, 39, 69, 42, 97, 34, 83, 8, 74, 38, 74, 22, 40, 7, 94])
@@ -19,6 +20,7 @@ def main():
 
     test = BGA(pop_shape=(num_pop, problem_dimentions), method=fitness, p_c=0.8, p_m=0.2, max_round = 1000, early_stop_rounds=None, verbose = None, maximum=True)
     best_solution, best_fitness = test.run()
+    print(test.generations)
 
 
 class BGA():
@@ -58,6 +60,8 @@ class BGA():
         self.early_stop_rounds = early_stop_rounds
         self.verbose = verbose
         self.maximum = maximum
+
+        # self.generations = []
 
     def evaluation(self, pop):
         """
@@ -108,7 +112,7 @@ class BGA():
         """
         Roulette Wheel Selection.
         Args:
-            size: the size of individuals you want to select according to their fitness.
+            size: the size of population you want to select according to their fitness.
             fitness: the fitness of population you want to apply rws to.
         """
         if self.maximum:
@@ -127,9 +131,9 @@ class BGA():
             global_best_ind: The best indiviudal during the evolutionary process.
             global_best_fitness: The fitness of the global_best_ind.
         """
-        global_best = 0
+        # global_best = 0
         self.initialization()
-        best_index = np.argsort(self.fitness)[0]
+        best_index = np.argsort(self.fitness)[-1]
         global_best_fitness = self.fitness[best_index]
         global_best_ind = self.pop[best_index, :]
         eva_times = self.pop_shape[0]
@@ -155,6 +159,10 @@ class BGA():
             self.fitness = self.evaluation(self.pop)
             eva_times += self.pop_shape[0]
 
+            # Saving the current best genes
+            # best_index = np.argsort(self.fitness)[-1]
+            # self.generations.append({"gene": self.pop[best_index], "fitness_value":np.max(self.fitness)})
+
             if self.maximum:
                 if np.max(self.fitness) > global_best_fitness:
                     best_index = np.argsort(self.fitness)[-1]
@@ -163,7 +171,7 @@ class BGA():
                     count = 0
                 else:
                     count +=1
-                worst_index = np.argsort(self.fitness)[-1]
+                worst_index = np.argsort(self.fitness)[0]
                 self.pop[worst_index, :] = global_best_ind
                 self.fitness[worst_index] = global_best_fitness
 
@@ -194,5 +202,6 @@ class BGA():
 __author__ = "Vangipuram Srinivasa Sarath Chandra"
 __email__ = "vssarathc04@gmail.com"
 __version__ = "0.0.1"
+
 if __name__ == '__main__':
-    main()
+    test()
